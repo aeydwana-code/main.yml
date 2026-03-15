@@ -1,13 +1,40 @@
-import requests, os
 
-token = os.getenv('TELEGRAM_TOKEN')
-chat_id = os.getenv('TELEGRAM_CHAT_ID')
 
-def launch():
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    payload = {"chat_id": chat_id, "text": "🎯 نظام MP8: تم الاتصال بنجاح! الأسطول جاهز."}
+import requests
+import os
+import datetime
+
+# إعدادات الأمان والقناة
+TOKEN = os.getenv('TELEGRAM_TOKEN')
+CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+
+def send_to_telegram(text):
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": text,
+        "parse_mode": "Markdown"
+    }
     requests.post(url, json=payload)
 
-if __name__ == "__main__":
-    launch()
+def start_collector():
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    
+    # رسالة انطلاق الرادار
+    header = f"🛰️ **رادار MP8 نشط الآن**\n"
+    header += f"📅 التاريخ: `{current_time}`\n"
+    header += f"----------------------------------\n"
+    header += f"🔍 جاري فحص المستودعات الـ 13 المرتبطة...\n"
+    header += f"📂 المهمة: تجميع ملفات الـ Combo وتصفيتها.\n"
+    header += f"🤖 البوت المستلم: @cryptog_mp8_bot"
+    
+    send_to_telegram(header)
+    
+    # هنا سيقوم النظام لاحقاً بإرسال الملفات المجمعة كـ Documents
+    print("Mission in progress: Scanning repositories...")
 
+if __name__ == "__main__":
+    if TOKEN and CHAT_ID:
+        start_collector()
+    else:
+        print("Error: Config missing (Token/ID)")
