@@ -1,20 +1,40 @@
-import requests, os
+
+import requests
+import os
+from datetime import datetime
 
 # إعدادات الأمان
 TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+USER = "aeydwana-code"
 
-def send_to_bot(text):
+# أهدافك الـ 13 (تم استخراجها من صورك)
+TARGETS = [
+    "cryptography.fernet",
+    "cryptography.fer",
+    "comboclean",
+    "main.yml"
+]
+
+def send_update(text):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     requests.post(url, json={"chat_id": CHAT_ID, "text": text, "parse_mode": "Markdown"})
 
-def start_capture():
-    # رسالة تفعيل الرادار للمستودعات الـ 13
-    msg = "🚀 **نظام MP8: تم تفعيل رادار سحب البيانات**\n"
-    msg += "-----------------------------------\n"
-    msg += "⚙️ الحالة: جاري التحضير لمسح الـ 13 مستودعاً...\n"
-    msg += "🔓 المهمة: استخراج ملفات الـ Combo وتصفيتها."
-    send_to_bot(msg)
+def capture_mission():
+    send_update("🛰️ **رادار MP8: بدء المسح الذكي للمستودعات الموثقة...**")
+    
+    for repo in TARGETS:
+        api_url = f"https://api.github.com/repos/{USER}/{repo}/contents"
+        res = requests.get(api_url)
+        if res.status_code == 200:
+            for file in res.json():
+                # جلب الملفات النصية فقط (Combo Lists)
+                if file['name'].endswith('.txt'):
+                    download_url = file['download_url']
+                    msg = f"✅ **صيد جديد في {repo}!**\n📄 الملف: `{file['name']}`\n🔗 [تحميل الملف المباشر]({download_url})"
+                    send_update(msg)
+        else:
+            send_update(f"⚠️ تنبيه: تعذر الوصول لمستودع `{repo}`")
 
 if __name__ == "__main__":
-    start_capture()
+    capture_mission()
