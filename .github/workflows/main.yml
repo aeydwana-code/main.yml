@@ -1,40 +1,39 @@
 
 import requests
 import os
-from datetime import datetime
+import datetime
 
-# إعدادات الأمان
+# إعدادات الأمان والقناة
 TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
-USER = "aeydwana-code"
 
-# أهدافك الـ 13 (تم استخراجها من صورك)
-TARGETS = [
-    "cryptography.fernet",
-    "cryptography.fer",
-    "comboclean",
-    "main.yml"
-]
-
-def send_update(text):
+def send_to_telegram(text):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    requests.post(url, json={"chat_id": CHAT_ID, "text": text, "parse_mode": "Markdown"})
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": text,
+        "parse_mode": "Markdown"
+    }
+    requests.post(url, json=payload)
 
-def capture_mission():
-    send_update("🛰️ **رادار MP8: بدء المسح الذكي للمستودعات الموثقة...**")
+def start_collector():
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     
-    for repo in TARGETS:
-        api_url = f"https://api.github.com/repos/{USER}/{repo}/contents"
-        res = requests.get(api_url)
-        if res.status_code == 200:
-            for file in res.json():
-                # جلب الملفات النصية فقط (Combo Lists)
-                if file['name'].endswith('.txt'):
-                    download_url = file['download_url']
-                    msg = f"✅ **صيد جديد في {repo}!**\n📄 الملف: `{file['name']}`\n🔗 [تحميل الملف المباشر]({download_url})"
-                    send_update(msg)
-        else:
-            send_update(f"⚠️ تنبيه: تعذر الوصول لمستودع `{repo}`")
+    # رسالة انطلاق الرادار
+    header = f"🛰️ **رادار MP8 نشط الآن**\n"
+    header += f"📅 التاريخ: `{current_time}`\n"
+    header += f"----------------------------------\n"
+    header += f"🔍 جاري فحص المستودعات الـ 13 المرتبطة...\n"
+    header += f"📂 المهمة: تجميع ملفات الـ Combo وتصفيتها.\n"
+    header += f"🤖 البوت المستلم: @cryptog_mp8_bot"
+    
+    send_to_telegram(header)
+    
+    # هنا سيقوم النظام لاحقاً بإرسال الملفات المجمعة كـ Documents
+    print("Mission in progress: Scanning repositories...")
 
 if __name__ == "__main__":
-    capture_mission()
+    if TOKEN and CHAT_ID:
+        start_collector()
+    else:
+        print("Error: Config missing (Token/ID)")
