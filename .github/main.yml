@@ -1,3 +1,4 @@
+
 name: MP8_Radar
 on:
   workflow_dispatch:
@@ -12,10 +13,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      - name: Install dependencies
-        run: pip install requests
-      - name: Run Script
-        env:
+      - run: pip install requests
+      - env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python run.py
