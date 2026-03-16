@@ -1,9 +1,9 @@
 
-name: MP8 Sanaa System
+name: MP8 Sanaa System Pro
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *' # تشغيل تلقائي كل ساعة
+    - cron: '0 * * * *'
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests pytz
 
       - name: Run Bot Script
         env:
@@ -28,20 +28,33 @@ jobs:
         run: |
           import os
           import requests
+          from datetime import datetime
+          import pytz
           
           def get_prices():
-              url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd"
+              # جلب الأسعار لـ 4 عملات
+              url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana&vs_currencies=usd"
               r = requests.get(url).json()
-              btc, eth, bnb = r['bitcoin']['usd'], r['ethereum']['usd'], r['binancecoin']['usd']
+              
+              btc = r['bitcoin']['usd']
+              eth = r['ethereum']['usd']
+              bnb = r['binancecoin']['usd']
+              sol = r['solana']['usd']
+              
+              # ضبط التوقيت (مثلاً بتوقيت مكة المكرمة)
+              tz = pytz.timezone('Asia/Riyadh')
+              now = datetime.now(tz).strftime('%Y-%m-%d | %I:%M %p')
               
               return (
-                  "⚡️ **المطور MP8 نظام صنعاء**\n"
+                  f"🏢 **نظام صنعاء المطور MP8**\n"
+                  f"⏰ {now}\n"
                   "━━━━━━━━━━━━━━━\n"
-                  f"💰 **BTC:** ${btc:,.0f}\n"
-                  f"💎 **ETH:** ${eth:,.2f}\n"
+                  f"🧡 **BTC:** ${btc:,.0f}\n"
+                  f"💙 **ETH:** ${eth:,.2f}\n"
                   f"🔸 **BNB:** ${bnb:,.2f}\n"
+                  f"💜 **SOL:** ${sol:,.2f}\n"
                   "━━━━━━━━━━━━━━━\n"
-                  "✅ تم التحديث بنجاح"
+                  "📈 **الحالة:** سوق مستقر"
               )
 
           token = os.getenv('TELEGRAM_TOKEN')
