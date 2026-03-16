@@ -1,16 +1,14 @@
+
 import os
 import requests
 
-token = os.getenv("TELEGRAM_TOKEN")
-chat_id = os.getenv("TELEGRAM_CHAT_ID")
+def send_test():
+    token = os.getenv('TELEGRAM_TOKEN')
+    chat_id = os.getenv('TELEGRAM_CHAT_ID')
+    msg = "🚀 النظام يعمل بنجاح! تم الربط مع MP8"
+    url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={msg}"
+    r = requests.get(url)
+    print(r.json())
 
-msg = "🚀 البوت يعمل بنجاح عبر GitHub Actions"
-
-url = f"https://api.telegram.org/bot{token}/sendMessage"
-
-data = {
-    "chat_id": chat_id,
-    "text": msg
-}
-
-requests.post(url, data=data)
+if __name__ == "__main__":
+    send_test()
