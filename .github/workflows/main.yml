@@ -1,56 +1,14 @@
 
 import os
 import requests
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
-# جلب البيانات من أسرار GitHub
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
-GMAIL_USER = os.getenv('GMAIL_USER')
-GMAIL_APP_PASSWORD = os.getenv('GMAIL_APP_PASSWORD')
-
-def get_crypto_prices():
-    url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd"
-    response = requests.get(url).json()
-    msg = "🚀 **تحديث أسعار العملات الرقمية (MP8)**\n\n"
-    msg += f"💰 BTC: ${response['bitcoin']['usd']}\n"
-    msg += f"💎 ETH: ${response['ethereum']['usd']}\n"
-    msg += f"🔸 BNB: ${response['binancecoin']['usd']}\n"
-    return msg
-
-def send_telegram(message):
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
-    r = requests.post(url, json=payload)
-    return r.status_code == 200
-
-def send_email(message):
-    msg = MIMEMultipart()
-    msg['From'] = GMAIL_USER
-    msg['To'] = GMAIL_USER
-    msg['Subject'] = "تقرير أسعار العملات - MP8"
-    msg.attach(MIMEText(message, 'plain'))
-    
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-    server.send_message(msg)
-    server.quit()
+def send_test():
+    token = os.getenv('TELEGRAM_TOKEN')
+    chat_id = os.getenv('TELEGRAM_CHAT_ID')
+    msg = "🚀 النظام يعمل بنجاح! تم الربط مع MP8"
+    url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={msg}"
+    r = requests.get(url)
+    print(r.json())
 
 if __name__ == "__main__":
-    try:
-        prices = get_crypto_prices()
-        # محاولة الإرسال لتليجرام
-        if send_telegram(prices):
-            print("✅ تم الإرسال لتليجرام بنجاح!")
-        else:
-            print("❌ فشل الإرسال لتليجرام. تأكد من Token و Chat ID.")
-        
-        # محاولة الإرسال للبريد
-        send_email(prices)
-        print("✅ تم إرسال الإيميل بنجاح!")
-        
-    except Exception as e:
-        print(f"⚠️ حدث خطأ في النظام: {e}")
+    send_test()
