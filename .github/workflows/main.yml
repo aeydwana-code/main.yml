@@ -59,7 +59,7 @@ jobs:
               msg += "📸 [Instagram](https://instagram.com/mp8_sanaa_system)\n"
               msg += "📧 Djggggvfvcvjv@gmail.com\n"
               msg += "━━━━━━━━━━━━━━━\n"
-              msg += "💎 **للاشتراك في التوصيات الـ VIP تواصل معنا**"
+              msg += "💎 **للاشتراك في التوصيات الـVIPتواصل معنا**"
               
               return msg
 
