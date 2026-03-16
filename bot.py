@@ -1,41 +1,50 @@
 
-import os
-import requests
+name: MP8 Crypto Tracker
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *' # يعمل تلقائياً كل ساعة
 
-def get_crypto_prices():
-    # جلب أسعار العملات الحقيقية
-    url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd"
-    response = requests.get(url).json()
-    
-    btc = response['bitcoin']['usd']
-    eth = response['ethereum']['usd']
-    bnb = response['binancecoin']['usd']
-    
-    msg = (
-        "⚡️ **نظام صنعاء MP8 المطور**\n"
-        "━━━━━━━━━━━━━━━\n"
-        f"💰 **BTC:** ${btc:,.0f}\n"
-        f"💎 **ETH:** ${eth:,.2f}\n"
-        f"🔸 **BNB:** ${bnb:,.2f}\n"
-        "━━━━━━━━━━━━━━━\n"
-        "✅ تم التحديث بنجاح من GitHub"
-    )
-    return msg
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-def send_message(text):
-    token = os.getenv('TELEGRAM_TOKEN')
-    chat_id = os.getenv('TELEGRAM_CHAT_ID')
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    payload = {"chat_id": chat_id, "text": text, "parse_mode": "Markdown"}
-    r = requests.post(url, json=payload)
-    return r.status_code == 200
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-if __name__ == "__main__":
-    try:
-        content = get_crypto_prices()
-        if send_message(content):
-            print("🚀 Success: Message sent to CryptoSanaaBot!")
-        else:
-            print("❌ Failure: Check Token and Chat ID.")
-    except Exception as e:
-        print(f"⚠️ Error: {e}")
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Crypto Bot
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          import os
+          import requests
+          
+          def send_msg():
+              token = os.getenv("TELEGRAM_TOKEN")
+              chat_id = os.getenv("TELEGRAM_CHAT_ID")
+              
+              # جلب الأسعار
+              url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd"
+              data = requests.get(url).json()
+              
+              btc = data['bitcoin']['usd']
+              eth = data['ethereum']['usd']
+              sol = data['solana']['usd']
+              
+              text = f"🚀 **نظام صنعاء MP8**\n\n🧡 Bitcoin: ${btc:,}\n💙 Ethereum: ${eth:,}\n💜 Solana: ${sol:,}"
+              
+              send_url = f"https://api.telegram.org/bot{token}/sendMessage"
+              requests.post(send_url, json={"chat_id": chat_id, "text": text, "parse_mode": "Markdown"})
+          
+          if __name__ == "__main__":
+              send_msg()
+        shell: python
