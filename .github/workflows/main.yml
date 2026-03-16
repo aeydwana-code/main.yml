@@ -1,45 +1,25 @@
 
-import requests
-import os
+name: MP8_Crypto_Tracker
 
-def get_prices():
-    # العملات التي سنراقبها
-    symbols = {
-        'BTCUSDT': 'Bitcoin (BTC) 🧡',
-        'ETHUSDT': 'Ethereum (ETH) 💙',
-        'SOLUSDT': 'Solana (SOL) 💜'
-    }
-    
-    results = []
-    for symbol, name in symbols.items():
-        try:
-            url = f"https://api.binance.com/api/v3/ticker/price?symbol={symbol}"
-            response = requests.get(url)
-            data = response.json()
-            price = float(data['price'])
-            # تنسيق السعر مع الفواصل العشرية
-            formatted_price = f"{price:,.2f}" if price > 1 else f"{price:.4f}"
-            results.append(f"{name}: **${formatted_price}**")
-        except:
-            results.append(f"{name}: غير متوفر حالياً")
-    
-    return "\n".join(results)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
 
-def send_telegram_update():
-    token = os.getenv('TELEGRAM_TOKEN')
-    chat_id = os.getenv('TELEGRAM_CHAT_ID')
-    
-    prices_text = get_prices()
-    message = f"📊 **تحديث أسعار العملات الرقمية المباشر:**\n\n{prices_text}\n\n🤖 بنظام MP8_System"
-    
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    payload = {
-        "chat_id": chat_id, 
-        "text": message,
-        "parse_mode": "Markdown" # لجعل الخط عريضاً وجميلاً
-    }
-    
-    requests.post(url, json=payload)
-
-if __name__ == "__main__":
-    send_telegram_update()
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Run Tracker
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python run.py
