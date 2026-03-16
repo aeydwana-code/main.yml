@@ -1,8 +1,7 @@
-
 name: MP8_System
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # يسمح لك بتشغيل البوت يدوياً
 
 jobs:
   run_mission:
@@ -24,3 +23,4 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python run.py
+        
