@@ -1,13 +1,11 @@
 
-name: MP8_
+name: MP8_System
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 * * * *'
 
 jobs:
-  run_task:
+  run_mission:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
