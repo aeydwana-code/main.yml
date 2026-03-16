@@ -1,5 +1,4 @@
-
-name: MP8 Sanaa System Final
+name: MP8_Sanaa_System_Final
 on:
   workflow_dispatch:
   schedule:
@@ -32,12 +31,11 @@ jobs:
           import pytz
           
           def get_prices():
-              # جلب الأسعار مع نسبة التغير
               url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana&vs_currencies=usd&include_24hr_change=true"
               r = requests.get(url).json()
               
               data = {
-                  "BTC": (r['bitcoin']['usd'], r['bitcoin']['usd_24_change']),
+                  "BTC": (r['bitcoin']['usd'], r['bitcoin']['usd_24h_change']),
                   "ETH": (r['ethereum']['usd'], r['ethereum']['usd_24h_change']),
                   "BNB": (r['binancecoin']['usd'], r['binancecoin']['usd_24h_change']),
                   "SOL": (r['solana']['usd'], r['solana']['usd_24h_change'])
@@ -55,11 +53,11 @@ jobs:
                   msg += f"{trend} **{coin}:** ${price:,.2f}\n"
               
               msg += "━━━━━━━━━━━━━━━\n"
-              msg += "📢 **قنواتنا الرسمية:**\n"
+              msg += "🔗 **روابطنا الرسمية:**\n"
               msg += "📸 [Instagram](https://instagram.com/mp8_sanaa_system)\n"
               msg += "📧 Djggggvfvcvjv@gmail.com\n"
               msg += "━━━━━━━━━━━━━━━\n"
-              msg += "💎 **للاشتراك في التوصيات الـVIPتواصل معنا**"
+              msg += "💎 **تواصل VIP للاشتراك في التوصيات معنا**"
               
               return msg
 
