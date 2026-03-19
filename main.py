@@ -4,54 +4,37 @@
 # IDENTITY: DEVELOPER_MP8
 # DATE: 2026-03-19
 
-import json
+import time
 
-class MP8Core:
+class MP8SanaaBot:
     def __init__(self):
-        self.bot_name = "نظام صنعاء المطور"
-        self.version = "v1.0-Stable"
-        
-        # قاعدة بيانات الحساسية لعام 2026
-        self.sensitivity_data = {
-            "آيفون": {"عام": 100, "نقطة": 95, "2x": 90, "4x": 85, "DPI": "تلقائي"},
-            "سامسونج": {"عام": 98, "نقطة": 92, "2x": 88, "4x": 80, "DPI": 600},
-            "شاومي": {"عام": 95, "نقطة": 90, "2x": 85, "4x": 82, "DPI": 550}
+        self.bot_identity = "MP8"
+        self.system_name = "نظام صنعاء المطور"
+        # بيانات العملات الرقمية المحدثة من آخر جلسة عمل
+        self.market_data = {
+            "BTC": 74267.00,
+            "ETH": 2330.09,
+            "BNB": 673.39,
+            "SOL": 94.34
         }
 
-    def get_crypto_prices(self):
-        # محاكاة لأسعار العملات بناءً على آخر سجلاتك
-        return {
-            "BTC": "$74,267.00",
-            "ETH": "$2,330.09",
-            "SOL": "$94.34"
-        }
-
-    def get_free_fire_settings(self, phone_model):
-        brand = phone_model.lower()
-        data = self.sensitivity_data.get(brand, {"عام": 90, "نقطة": 90, "2x": 90, "4x": 90, "DPI": "قياسي"})
+    def generate_report(self):
+        current_time = "2026-03-19 | 02:11 PM"
+        header = f"🏦 {self.system_name} | {self.bot_identity}\n🗓️ {current_time}\n"
+        divider = "━━━━━━━━━━━━━━━\n"
         
-        prices = self.get_crypto_prices()
-        
-        report = (
-            f"🏦 {self.bot_name} | MP8\n"
-            f"📅 2026-03-19 | {self.version}\n"
-            f"━━━━━━━━━━━━━━━\n"
-            f"💰 أسعار السوق الحالية:\n"
-            f"🔴 BTC: {prices['BTC']}\n"
-            f"🟢 ETH: {prices['ETH']}\n"
-            f"🟢 SOL: {prices['SOL']}\n"
-            f"━━━━━━━━━━━━━━━\n"
-            f"🎯 إعدادات الحساسية ({phone_model}):\n"
-            f"• العام: {data['عام']}\n"
-            f"• النقطة الحمراء: {data['نقطة']}\n"
-            f"• عدسة 2x: {data['2x']}\n"
-            f"• DPI: {data['DPI']}\n"
-            f"━━━━━━━━━━━━━━━\n"
-            f"💎 بواسطة: MP8 المطور"
-        )
-        return report
+        body = ""
+        for coin, price in self.market_data.items():
+            # إضافة الرموز التعبيرية بناءً على استايل نظامك
+            status_emoji = "🟢" if coin in ["ETH", "SOL"] else "🔴"
+            body += f"{status_emoji} {coin}: ${price:,.2f}\n"
+            
+        footer = f"{divider}👆 استخدم الأزرار للوصول السريع\n💎 المطور: {self.bot_identity}"
+        return header + divider + body + footer
 
-# تشغيل النظام
+# بروتوكول التشغيل النهائي
 if __name__ == "__main__":
-    sanaa_bot = MP8Core()
-    print(sanaa_bot.get_free_fire_settings("آيفون"))
+    sanaa_engine = MP8SanaaBot()
+    print("🤖 SYSTEM_LOG: جاري استخراج تقرير العملات...")
+    time.sleep(1)
+    print(sanaa_engine.generate_report())
