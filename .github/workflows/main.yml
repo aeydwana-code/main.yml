@@ -1,17 +1,28 @@
 
 # [OPERATOR: THE ARCHITECT]
-# SYSTEM: FREE_FIRE_SENSITIVITY_MODULE
+# PROJECT: SANAA_BOT_SENSITIVITY
+# IDENTITY: MP8_DEVELOPER
 
-def get_sensitivity(phone_model):
-    # قاعدة بيانات تجريبية للحساسية
+def get_free_fire_settings(phone_model):
+    # قاعدة بيانات الحساسية المحدثة لعام 2026
     database = {
-        "iphone_13": "General: 95, Red Dot: 90, 2x: 85",
-        "samsung_s21": "General: 100, Red Dot: 88, 2x: 80",
-        "xiaomi_poco": "General: 98, Red Dot: 92, 2x: 90"
+        "iphone": {"Gen": 100, "Red": 95, "2x": 90, "4x": 85, "DPI": "None"},
+        "samsung": {"Gen": 98, "Red": 92, "2x": 88, "4x": 80, "DPI": 600},
+        "xiaomi": {"Gen": 95, "Red": 90, "2x": 85, "4x": 82, "DPI": 550},
     }
     
-    result = database.get(phone_model.lower(), "الطراز غير مدعوم حالياً، جرب إعدادات افتراضية: 90/90/90")
-    return f"🤖 SYSTEM_LOG: إعدادات الحساسية لـ {phone_model}:\n{result}"
+    brand = phone_model.lower().split()[0]
+    data = database.get(brand, {"Gen": 90, "Red": 90, "2x": 90, "4x": 90, "DPI": "Standard"})
+    
+    return (f"🔥 إعدادات 'بوت صنعاء' لـ {phone_model}:\n"
+            f"━━━━━━━━━━━━━━━\n"
+            f"🎯 العام: {data['Gen']}\n"
+            f"🔴 النقطة الحمراء: {data['Red']}\n"
+            f"🔭 عدسة 2x: {data['2x']}\n"
+            f"🔭 عدسة 4x: {data['4x']}\n"
+            f"⚙️ الـ DPI المقترح: {data['DPI']}\n"
+            f"━━━━━━━━━━━━━━━\n"
+            f"💎 بواسطة: MP8 المطور")
 
-# تجربة التشغيل في الـ Console
-print(get_sensitivity("iphone_13"))
+# تجربة المحرك
+print(get_free_fire_settings("Samsung S23"))
